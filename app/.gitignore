@@ -1,1 +1,32 @@
-/build
+# Android Studio project files
+*.iml
+.gradle
+/local.properties
+.idea/
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# macOS junk
+.DS_Store
+
+# Build and intermediate files
+/build/
+.cxx/
+.externalNativeBuild/
+captures/
+*.log
+*.swp
+*.tmp
+
+# Signing keys and secrets
+android/app/google-services.json
+android/key.properties
+*.keystore
+
+# Crashlytics or analytics (optional if using Firebase Crashlytics)
+crashlytics-build.properties
+

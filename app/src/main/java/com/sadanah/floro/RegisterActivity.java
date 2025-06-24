@@ -88,6 +88,9 @@ public class RegisterActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(RegisterActivity.this, "Account created.",
                                             Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
                                     // Sign in success, update UI with the signed-in user's information
                                     //Log.d(TAG, "createUserWithEmail:success");
                                     //FirebaseUser user = mAuth.getCurrentUser();

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Floro</string>
+    <string name="login">Login</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="register">Register</string>
+    <string name="proceed_to_login">Proceed to Login</string>
+    <string name="register_now">Register Now</string>
+    <string name="user">User</string>
+    <string name="logout">Logout</string>
 </resources>

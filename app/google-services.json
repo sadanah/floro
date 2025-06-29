@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "685297647572",
+    "project_id": "floro-93455",
+    "storage_bucket": "floro-93455.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685297647572:android:edb69ee84358e6cae16041",
+        "android_client_info": {
+          "package_name": "com.sadanah.floro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByhCTRuPRJMsIVcRafO4jXveZmqOveiO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/home"
+        android:title="Home"
+        android:icon="@drawable/ic_placeholder"/>
+
+    <item
+        android:id="@+id/info"
+        android:title="Info"
+        android:icon="@drawable/ic_placeholder"
+        />
+
+    <item
+        android:title=""/>
+
+    <item
+        android:id="@+id/subscriptions"
+        android:title="Subscriptions"
+        android:icon="@drawable/ic_placeholder" />
+    <item
+        android:id="@+id/library"
+        android:title="Library"
+        android:icon="@drawable/ic_placeholder" />
+
+</menu>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "685297647572",
+    "project_id": "floro-93455",
+    "storage_bucket": "floro-93455.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685297647572:android:edb69ee84358e6cae16041",
+        "android_client_info": {
+          "package_name": "com.sadanah.floro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "685297647572-idt4g8m7mqiicaebkd4pmmei328m9iev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sadanah.floro",
+            "certificate_hash": "4c1e4702261532d3d766ebb8ea2890a6636136d3"
+          }
+        },
+        {
+          "client_id": "685297647572-937v23ka12g0uq8me6il0trbckpuilhs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByhCTRuPRJMsIVcRafO4jXveZmqOveiO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "685297647572-937v23ka12g0uq8me6il0trbckpuilhs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

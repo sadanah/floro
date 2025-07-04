@@ -7,8 +7,8 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
-        <item name="colorPrimary">#0F9D58</item>
-        <item name="colorPrimaryVariant">#0F9D58</item>
+        <item name="colorPrimary">#410F9D</item>
+        <item name="colorPrimaryVariant">#692ECA</item>
         <item name="colorOnPrimary">#000</item>
     </style>
 

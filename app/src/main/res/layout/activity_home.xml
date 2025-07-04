@@ -12,7 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:background="@color/light_lavender"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="30dp">
 
         <TextView
             android:id="@+id/user_details"
@@ -20,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="User Email"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="#000000" />
 
         <Button

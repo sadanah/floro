@@ -6,12 +6,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -22,15 +19,26 @@ public class MainActivity extends AppCompatActivity {
     TextView userDetails;
     FirebaseUser user;
 
+    BottomNavigationView bottomNavigationView;  // Add this
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_home);
 
+        // Initialize views
         auth = FirebaseAuth.getInstance();
         btnLogout = findViewById(R.id.btn_logout);
         userDetails = findViewById(R.id.user_details);
+
+        // Initialize BottomNavigationView
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);  // Use your actual ID here
+
+        // Equivalent of Kotlin:
+        bottomNavigationView.setBackground(null);  // remove background
+        bottomNavigationView.getMenu().getItem(2).setEnabled(false);  // disable third menu item
+
         user = auth.getCurrentUser();
 
         if (user == null) {

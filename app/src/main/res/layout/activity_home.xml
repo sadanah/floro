@@ -72,9 +72,12 @@
         android:layout_height="wrap_content"
         app:layout_anchor="@id/bottomAppBar"
         app:layout_anchorGravity="center"
-        android:layout_margin="16dp"
+        android:layout_margin="20dp"
         android:src="@drawable/ic_placeholder"
+        app:fabCustomSize="65dp"
         android:contentDescription="@string/app_name"
-        app:backgroundTint="@color/lavender" />
+        app:backgroundTint="@color/light_lavender"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Fab.Circle" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

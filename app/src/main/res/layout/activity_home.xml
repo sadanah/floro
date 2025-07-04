@@ -7,57 +7,74 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!-- Top user info -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
-        <!-- User email display -->
         <TextView
             android:id="@+id/user_details"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="User Email"
             android:layout_weight="1"
+            android:text="User Email"
             android:textSize="18sp"
-            android:textColor="#000000"
-            android:layout_marginBottom="24dp" />
+            android:textColor="#000000" />
 
-        <!-- Logout button -->
         <Button
             android:id="@+id/btn_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Logout" />
-
     </LinearLayout>
 
+    <!-- Content container (fragment or main content) -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="80dp" />
+
+    <!-- BottomAppBar and BottomNavigationView separated -->
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:fabCradleMargin="10dp"
-        app:fabCradleRoundedCornerRadius="10dp"
-        app:fabCradleVerticalOffset="10dp">
+        app:fabCradleRoundedCornerRadius="28dp"
+        app:fabCradleVerticalOffset="10dp"
+        app:hideOnScroll="false"
+        android:backgroundTint="@color/white"
+        app:itemRippleColor="@android:color/transparent"
+        app:itemBackground="@android:color/transparent"
+        app:fabAlignmentMode="center"/>
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/transparent"
-            app:itemRippleColor="@android:color/transparent"
-            android:elevation="0dp"
-            app:menu="@menu/bottom_nav_menu" />
+    <!-- BottomNavigationView sits separately above the BottomAppBar (or inside if needed) -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemRippleColor="@android:color/transparent"
+        app:itemBackground="@android:color/transparent" />
 
-    </com.google.android.material.bottomappbar.BottomAppBar>
-
+    <!-- Floating Action Button centered above BottomAppBar -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/app_name"
+        app:layout_anchor="@id/bottomAppBar"
+        app:layout_anchorGravity="center"
+        android:layout_margin="16dp"
         android:src="@drawable/ic_placeholder"
-        app:layout_anchor="@id/bottomAppBar" />
+        android:contentDescription="@string/app_name"
+        app:backgroundTint="@color/lavender" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

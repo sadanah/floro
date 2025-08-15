@@ -12,14 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@color/light_lavender">
 
         <TextView
             android:id="@+id/user_details"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="User Email"
+            android:text="@string/user_email"
             android:textSize="18sp"
             android:textColor="#000000" />
 
@@ -27,7 +28,7 @@
             android:id="@+id/btn_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Logout" />
+            android:text="@string/logout" />
     </LinearLayout>
 
     <!-- Content container (fragment or main content) -->
@@ -72,8 +73,8 @@
         android:layout_height="wrap_content"
         app:layout_anchor="@id/bottomAppBar"
         app:layout_anchorGravity="center"
-        android:layout_margin="20dp"
-        android:src="@drawable/ic_placeholder"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_add_photo"
         app:fabCustomSize="65dp"
         android:contentDescription="@string/app_name"
         app:backgroundTint="@color/light_lavender"

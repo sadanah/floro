@@ -7,39 +7,45 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- Top user info -->
+    <!-- Vertical layout for top bar + fragment container -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="@color/light_lavender">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/user_details"
-            android:layout_width="0dp"
+        <!-- Top user info -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/user_email"
-            android:textSize="18sp"
-            android:textColor="#000000" />
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:background="@color/light_lavender">
 
-        <Button
-            android:id="@+id/btn_logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/logout" />
+            <TextView
+                android:id="@+id/user_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/user_email"
+                android:textSize="18sp"
+                android:textColor="#000000" />
+
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/logout" />
+        </LinearLayout>
+
+        <!-- Fragment container fills all available space above bottom bar -->
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
     </LinearLayout>
 
-    <!-- Content container (fragment or main content) -->
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginBottom="80dp" />
-
-    <!-- BottomAppBar and BottomNavigationView separated -->
+    <!-- BottomAppBar -->
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
@@ -52,9 +58,9 @@
         android:backgroundTint="@color/white"
         app:itemRippleColor="@android:color/transparent"
         app:itemBackground="@android:color/transparent"
-        app:fabAlignmentMode="center"/>
+        app:fabAlignmentMode="center" />
 
-    <!-- BottomNavigationView sits separately above the BottomAppBar (or inside if needed) -->
+    <!-- BottomNavigationView -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
@@ -66,7 +72,7 @@
         app:itemRippleColor="@android:color/transparent"
         app:itemBackground="@android:color/transparent" />
 
-    <!-- Floating Action Button centered above BottomAppBar -->
+    <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -79,6 +85,5 @@
         android:contentDescription="@string/app_name"
         app:backgroundTint="@color/light_lavender"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.Fab.Circle" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

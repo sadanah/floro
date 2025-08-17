@@ -29,3 +29,6 @@ android/key.properties
 
 # Crashlytics or analytics (optional if using Firebase Crashlytics)
 crashlytics-build.properties
+
+# Tensorflow Model
+.tflite

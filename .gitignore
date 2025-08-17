@@ -31,4 +31,4 @@ android/key.properties
 crashlytics-build.properties
 
 # Tensorflow Model
-.tflite
+orchid_custom_model.tflite

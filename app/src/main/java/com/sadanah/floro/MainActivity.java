@@ -45,6 +45,10 @@ import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import android.graphics.BitmapFactory;
+import java.io.InputStream;
+import java.io.IOException;
+import android.graphics.Bitmap.Config;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -142,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d("MainActivity", "FAB found");
             fab.setOnClickListener(v -> {
-                Toast.makeText(this, "FAB clicked!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "FAB clicked!", Toast.LENGTH_SHORT).show();
                 Log.d("MainActivity", "FAB clicked");
                 showAddPhotoSheet();
             });
@@ -228,30 +232,111 @@ public class MainActivity extends AppCompatActivity {
         try {
             Bitmap bitmap = decodeBitmap(uri);
             if (bitmap == null) {
-                Toast.makeText(this, "Unable to read image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Unable to decode image", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             InferenceResult result = runInference(bitmap);
-            String msg = String.format(Locale.US, "Prediction: %s (%.1f%%)", result.label, result.confidence * 100);
+            String msg = "Prediction: " + result.label + " (" + String.format("%.1f", result.confidence * 100) + "%)";
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 
+        } catch (IOException e) {
+            Toast.makeText(this, "Error decoding image: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
         } catch (Exception e) {
-            Toast.makeText(this, "Error processing image: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Unexpected error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
         }
     }
+
 
     private Bitmap decodeBitmap(Uri uri) throws IOException {
         if (uri == null) return null;
         ContentResolver cr = getContentResolver();
+        Bitmap bitmap;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) { // API 28+
+        // For Android 9 (API 28) and up, use ImageDecoder
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             ImageDecoder.Source src = ImageDecoder.createSource(cr, uri);
-            return ImageDecoder.decodeBitmap(src);
+            bitmap = ImageDecoder.decodeBitmap(src, (decoder, info, source) -> {
+                // Resize while decoding to MODEL_IMAGE_WIDTH x MODEL_IMAGE_HEIGHT to save memory
+                decoder.setTargetSize(MODEL_IMAGE_WIDTH, MODEL_IMAGE_HEIGHT);
+
+                // Use software allocator to avoid issues with hardware bitmaps which may be immutable/restricted
+                decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE);
+            });
+
+            if (bitmap == null) throw new IOException("Failed to decode image");
+
+            // Ensure bitmap is ARGB_8888 and mutable so getPixels / pixel access works
+            if (bitmap.getConfig() != Bitmap.Config.ARGB_8888 || !bitmap.isMutable()) {
+                bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                if (bitmap == null) throw new IOException("Failed to make mutable bitmap copy");
+            }
+
         } else {
-            return MediaStore.Images.Media.getBitmap(cr, uri);
+            // Legacy path for older devices
+            InputStream is = null;
+            try {
+                is = cr.openInputStream(uri);
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+                // Optionally, we can sample down large images: (simple approach)
+                // First decode bounds
+                opts.inJustDecodeBounds = true;
+                BitmapFactory.decodeStream(is, null, opts);
+                if (is != null) { is.close(); is = cr.openInputStream(uri); }
+
+                // compute inSampleSize
+                opts.inSampleSize = calculateInSampleSize(opts, MODEL_IMAGE_WIDTH, MODEL_IMAGE_HEIGHT);
+                opts.inJustDecodeBounds = false;
+
+                bitmap = BitmapFactory.decodeStream(is, null, opts);
+                if (bitmap == null) throw new IOException("Failed to decode bitmap (legacy)");
+
+                if (!bitmap.isMutable() || bitmap.getConfig() != Bitmap.Config.ARGB_8888) {
+                    Bitmap tmp = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                    if (tmp == null) throw new IOException("Failed to make mutable copy");
+                    bitmap.recycle();
+                    bitmap = tmp;
+                }
+            } finally {
+                if (is != null) try { is.close(); } catch (IOException ignored) {}
+            }
+
+            // final safety resize to model size
+            if (bitmap.getWidth() != MODEL_IMAGE_WIDTH || bitmap.getHeight() != MODEL_IMAGE_HEIGHT) {
+                Bitmap scaled = Bitmap.createScaledBitmap(bitmap, MODEL_IMAGE_WIDTH, MODEL_IMAGE_HEIGHT, true);
+                if (scaled != bitmap) {
+                    bitmap.recycle();
+                    bitmap = scaled;
+                }
+            }
         }
+
+        return bitmap;
     }
+
+
+    //Helper to compute a power-of-two inSampleSize for BitmapFactory
+
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
+    }
+
 
     // ---------- TFLite ----------
     private void initTflite() throws IOException {

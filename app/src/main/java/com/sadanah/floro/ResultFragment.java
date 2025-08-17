@@ -14,6 +14,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.InputStream;
 import java.util.Locale;
 
 public class ResultFragment extends Fragment {
@@ -59,7 +63,7 @@ public class ResultFragment extends Fragment {
         TextView tvDescH = view.findViewById(R.id.tv_description_header);
         TextView tvDesc  = view.findViewById(R.id.tv_description);
         TextView tvTreatH= view.findViewById(R.id.tv_treatment_header);
-        TextView tvTreat = view.findViewById(R.id.tv_treatment);
+        LinearLayout treatmentContainer = view.findViewById(R.id.treatment_container);
         TextView tvProdH = view.findViewById(R.id.tv_products_header);
         LinearLayout productsContainer = view.findViewById(R.id.products_container);
 
@@ -67,23 +71,19 @@ public class ResultFragment extends Fragment {
         tvConf.setText(String.format(Locale.US, "Confidence: %.1f%%", confidence * 100f));
 
         DBHelper db = new DBHelper(requireContext());
-
         DBHelper.DiseaseDetails details = null;
         if (diseaseName != null) {
-            // Try a straight lookup by name first
             details = db.getDiseaseDetailsByName(diseaseName);
-            // If that fails, try the label-normalizing helper
             if (details == null) {
                 details = db.getDiseaseDetailsForModelLabel(diseaseName);
             }
         }
 
         if (details == null) {
-            // Handle "healthy" or unknown gracefully
             tvPlant.setText("Plant: —");
             tvType.setText("Type: —");
             tvDesc.setText("No disease information found.");
-            tvTreat.setText("—");
+            treatmentContainer.removeAllViews();
             tvDescH.setVisibility(View.VISIBLE);
             tvTreatH.setVisibility(View.VISIBLE);
             tvProdH.setVisibility(View.VISIBLE);
@@ -91,17 +91,26 @@ public class ResultFragment extends Fragment {
             return;
         }
 
-        // Plant
-        if (details.plant != null) {
-            tvPlant.setText("Plant: " + details.plant.plantName);
-        } else {
-            tvPlant.setText("Plant: —");
-        }
+        // Plant info
+        tvPlant.setText("Plant: " + (details.plant != null ? details.plant.plantName : "—"));
+        tvType.setText("Type: " + (details.disease.diseaseType != null ? details.disease.diseaseType : "—"));
+        tvDesc.setText(details.disease.diseaseDescription != null ? details.disease.diseaseDescription : "—");
 
-        // Disease info
-        tvType.setText("Type: " + (details.disease.diseaseType == null ? "—" : details.disease.diseaseType));
-        tvDesc.setText(details.disease.diseaseDescription == null ? "—" : details.disease.diseaseDescription);
-        tvTreat.setText(details.disease.diseaseTreatment == null ? "—" : details.disease.diseaseTreatment);
+        // Load treatment from JSON file
+        treatmentContainer.removeAllViews();
+        if (details.disease.diseaseTreatment != null) {
+            try {
+                JSONObject treatmentJson = loadJsonFromAssets(details.disease.diseaseTreatment);
+                if (treatmentJson != null) {
+                    addTreatmentSection(treatmentContainer, "Cultural Care", treatmentJson.getJSONArray("culturalCare"));
+                    addTreatmentSection(treatmentContainer, "Chemical Control", treatmentJson.getJSONArray("chemicalControl"));
+                    addTreatmentSection(treatmentContainer, "Eco-Friendly Methods", treatmentJson.getJSONArray("ecoFriendly"));
+                }
+            } catch (Exception e) {
+                TextView error = makeSmallText("Failed to load treatment info.");
+                treatmentContainer.addView(error);
+            }
+        }
 
         // Products
         productsContainer.removeAllViews();
@@ -116,6 +125,57 @@ public class ResultFragment extends Fragment {
         }
     }
 
+    private void addTreatmentSection(LinearLayout container, String sectionTitle, JSONArray items) {
+        TextView header = new TextView(requireContext());
+        header.setText(sectionTitle);
+        header.setTextSize(16f);
+        header.setPadding(0, dp(8), 0, dp(4));
+        header.setTypeface(null, android.graphics.Typeface.BOLD);
+        container.addView(header);
+
+        for (int i = 0; i < items.length(); i++) {
+            try {
+                JSONObject obj = items.getJSONObject(i);
+                String title = obj.getString("title");
+                JSONArray steps = obj.getJSONArray("steps");
+
+                // Section subtitle
+                TextView subTitle = new TextView(requireContext());
+                subTitle.setText(title);
+                subTitle.setTextSize(15f);
+                subTitle.setPadding(dp(8), dp(4), 0, dp(2));
+                subTitle.setTypeface(null, android.graphics.Typeface.BOLD);
+                container.addView(subTitle);
+
+                // Steps as bullet points
+                for (int j = 0; j < steps.length(); j++) {
+                    String step = steps.getString(j);
+                    TextView stepView = new TextView(requireContext());
+                    stepView.setText("• " + step);
+                    stepView.setTextSize(14f);
+                    stepView.setPadding(dp(16), dp(2), 0, dp(2));
+                    container.addView(stepView);
+                }
+
+            } catch (Exception ignored) {}
+        }
+    }
+
+    private JSONObject loadJsonFromAssets(String fileName) {
+        try {
+            InputStream is = requireContext().getAssets().open(fileName);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            String json = new String(buffer, "UTF-8");
+            return new JSONObject(json).getJSONObject("treatment");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private TextView makeSmallText(String text) {
         TextView tv = new TextView(requireContext());
         tv.setText(text);
@@ -124,7 +184,6 @@ public class ResultFragment extends Fragment {
     }
 
     private View makeProductRow(DBHelper.Product p) {
-        // Simple vertical row: Name (bold-ish), optional price, clickable link if present
         LinearLayout row = new LinearLayout(requireContext());
         row.setOrientation(LinearLayout.VERTICAL);
         row.setPadding(0, dp(6), 0, dp(6));
@@ -132,7 +191,6 @@ public class ResultFragment extends Fragment {
         TextView name = new TextView(requireContext());
         name.setText(p.productName);
         name.setTextSize(16f);
-
         row.addView(name);
 
         if (p.productPrice != null) {
@@ -142,7 +200,7 @@ public class ResultFragment extends Fragment {
 
         if (p.productLink != null && !p.productLink.isEmpty()) {
             TextView link = makeSmallText(p.productLink);
-            link.setTextColor(0xFF2962FF); // default link-ish color
+            link.setTextColor(0xFF2962FF);
             link.setOnClickListener(v -> {
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(p.productLink)));
@@ -150,6 +208,7 @@ public class ResultFragment extends Fragment {
             });
             row.addView(link);
         }
+
         return row;
     }
 

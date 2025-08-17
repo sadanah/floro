@@ -124,14 +124,14 @@ public class DBHelper extends SQLiteOpenHelper {
                             "black leaf spots starting at the tips and spreading downward, " +
                             "thriving in humid, poorly ventilated, and wet conditions.",
                     "Fungal",
-                    "Remove infected parts. Improve airflow. Apply a fungicide as directed.",
+                    "anthracnose.json",
                     orchidId);
 
             long softRotId = insertDisease(db,
                     "Soft Rot",
                     "A bacterial disease leading to soft, mushy tissues with a foul odor.",
                     "Bacterial",
-                    "Remove affected areas with sterile tools. Improve drainage. Apply appropriate bactericide.",
+                    "soft-rot.json",
                     orchidId);
 
             // Products

@@ -32,6 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
 import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.gpu.CompatibilityList;
 import org.tensorflow.lite.gpu.GpuDelegate;
@@ -49,6 +50,11 @@ import android.graphics.BitmapFactory;
 import java.io.InputStream;
 import java.io.IOException;
 import android.graphics.Bitmap.Config;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -188,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.dismiss();
             pickFromGallery();
         });
+
 
         dialog.show();
     }
@@ -403,5 +410,34 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         if (tflite != null) { tflite.close(); tflite = null; }
         if (gpuDelegate != null) { gpuDelegate.close(); gpuDelegate = null; }
+
+        // Handle bottom navigation item clicks
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home) {
+                selectedFragment = new HomeFragment();
+            } else if (id == R.id.nav_search) {
+                selectedFragment = new SearchFragment();
+            } else if (id == R.id.nav_profile) {
+                selectedFragment = new ProfileFragment();
+            } else if (id == R.id.nav_settings) {
+                selectedFragment = new SettingsFragment();
+            }
+
+            if (selectedFragment != null) {
+                loadFragment(selectedFragment);
+            }
+            return true;
+        });
+
+    }
+
+    private void loadFragment(Fragment fragment) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fragment_container, fragment);
+        ft.commit();
     }
 }

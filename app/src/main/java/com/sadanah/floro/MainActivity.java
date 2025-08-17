@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,7 @@ import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -134,7 +136,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // FAB click -> open bottom sheet for upload
-        fab.setOnClickListener(v -> showAddPhotoSheet());
+        fab = findViewById(R.id.fab);
+        if (fab == null) {
+            Log.e("MainActivity", "FAB not found!");
+        } else {
+            Log.d("MainActivity", "FAB found");
+            fab.setOnClickListener(v -> {
+                Toast.makeText(this, "FAB clicked!", Toast.LENGTH_SHORT).show();
+                Log.d("MainActivity", "FAB clicked");
+                showAddPhotoSheet();
+            });
+        }
 
         // Load TFLite model
         try {
@@ -151,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    // ---------- Bottom Sheet ----------
+    //---------- Bottom Sheet ----------
     private void showAddPhotoSheet() {
         if (!hasMediaPermissions()) {
             requestMediaPermissions();
@@ -175,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
 
     private boolean hasMediaPermissions() {
         boolean cameraOk = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
@@ -220,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             InferenceResult result = runInference(bitmap);
-            String msg = "Prediction: " + result.label + " (" + String.format("%.1f", result.confidence * 100) + "%)";
+            String msg = String.format(Locale.US, "Prediction: %s (%.1f%%)", result.label, result.confidence * 100);
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
@@ -229,8 +242,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Bitmap decodeBitmap(Uri uri) throws IOException {
+        if (uri == null) return null;
         ContentResolver cr = getContentResolver();
-        if (Build.VERSION.SDK_INT >= 28) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) { // API 28+
             ImageDecoder.Source src = ImageDecoder.createSource(cr, uri);
             return ImageDecoder.decodeBitmap(src);
         } else {
@@ -245,11 +260,12 @@ public class MainActivity extends AppCompatActivity {
 
         Interpreter.Options options = new Interpreter.Options();
         try {
-            CompatibilityList compatList = new CompatibilityList();
-            if (compatList.isDelegateSupportedOnThisDevice()) {
-                gpuDelegate = new GpuDelegate();
-                options.addDelegate(gpuDelegate);
-            }
+            try (CompatibilityList compatList = new CompatibilityList()) {
+                if (compatList.isDelegateSupportedOnThisDevice()) {
+                    gpuDelegate = new GpuDelegate();
+                    options.addDelegate(gpuDelegate);
+                }
+            } catch (Throwable ignore) {}
         } catch (Throwable ignore) {}
 
         tflite = new Interpreter(model, options);
@@ -293,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        String bestLabel = (bestIdx >= 0 && bestIdx < labels.size()) ? labels.get(bestIdx) : "Unknown";
+        String bestLabel = labels.get(bestIdx);
         return new InferenceResult(bestLabel, best);
     }
 

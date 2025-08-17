@@ -129,9 +129,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Load default fragment
-        if (savedInstanceState == null) {
-            loadFragment(new HomeFragment());
-        }
+//        if (savedInstanceState == null) {
+//            loadFragment(new HomeFragment());
+//        }
 
         // Bottom navigation switching
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -293,7 +293,10 @@ public class MainActivity extends AppCompatActivity {
                 // First decode bounds
                 opts.inJustDecodeBounds = true;
                 BitmapFactory.decodeStream(is, null, opts);
-                if (is != null) { is.close(); is = cr.openInputStream(uri); }
+                if (is != null) {
+                    is.close();
+                    is = cr.openInputStream(uri);
+                }
 
                 // compute inSampleSize
                 opts.inSampleSize = calculateInSampleSize(opts, MODEL_IMAGE_WIDTH, MODEL_IMAGE_HEIGHT);
@@ -309,7 +312,10 @@ public class MainActivity extends AppCompatActivity {
                     bitmap = tmp;
                 }
             } finally {
-                if (is != null) try { is.close(); } catch (IOException ignored) {}
+                if (is != null) try {
+                    is.close();
+                } catch (IOException ignored) {
+                }
             }
 
             // final safety resize to model size
@@ -357,8 +363,10 @@ public class MainActivity extends AppCompatActivity {
                     gpuDelegate = new GpuDelegate();
                     options.addDelegate(gpuDelegate);
                 }
-            } catch (Throwable ignore) {}
-        } catch (Throwable ignore) {}
+            } catch (Throwable ignore) {
+            }
+        } catch (Throwable ignore) {
+        }
 
         tflite = new Interpreter(model, options);
     }
@@ -366,7 +374,11 @@ public class MainActivity extends AppCompatActivity {
     private static class InferenceResult {
         final String label;
         final float confidence;
-        InferenceResult(String l, float c) { label = l; confidence = c; }
+
+        InferenceResult(String l, float c) {
+            label = l;
+            confidence = c;
+        }
     }
 
     private InferenceResult runInference(Bitmap bitmap) {
@@ -408,8 +420,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (tflite != null) { tflite.close(); tflite = null; }
-        if (gpuDelegate != null) { gpuDelegate.close(); gpuDelegate = null; }
+        if (tflite != null) {
+            tflite.close();
+            tflite = null;
+        }
+        if (gpuDelegate != null) {
+            gpuDelegate.close();
+            gpuDelegate = null;
+        }
 
         // Handle bottom navigation item clicks
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -434,10 +452,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void loadFragment(Fragment fragment) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.fragment_container, fragment);
-        ft.commit();
-    }
 }

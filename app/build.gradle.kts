@@ -56,6 +56,14 @@ dependencies {
 
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
+
+    implementation(libs.tensorflow.lite)
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.gpu)
+    implementation(libs.camerax.core)
+    implementation(libs.camerax.camera2)
+    implementation(libs.camerax.lifecycle)
+    implementation(libs.camerax.view)
 }
 
 apply(plugin = "com.google.gms.google-services")

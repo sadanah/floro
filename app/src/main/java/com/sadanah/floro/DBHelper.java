@@ -110,13 +110,19 @@ public class DBHelper extends SQLiteOpenHelper {
     private void seedIfEmpty(SQLiteDatabase db) {
         if (isTableEmpty(db, T_PLANTS)) {
             long orchidId = insertPlant(db, "Orchid",
-                    "Orchids are popular ornamental plants with diverse species.",
+                    "Orchids (family Orchidaceous) are one of the largest groups of flowering plants, " +
+                            "with about 28,000 species in 880 genera. Found in nearly all habitats except glaciers, " +
+                            "they are most diverse in the tropics. Known for their colorful, intricate blooms, " +
+                            "orchids have long been cultivated for ornamental, medicinal, and culinary " +
+                            "uses (e.g., vanilla).",
                     "orchid.png");
 
             // Diseases
             long anthracnoseId = insertDisease(db,
                     "Anthracnose",
-                    "A fungal disease causing dark, sunken lesions on leaves and stems.",
+                    "Anthracnose in orchids, caused by Colletotrichum fungi, appears as " +
+                            "black leaf spots starting at the tips and spreading downward, " +
+                            "thriving in humid, poorly ventilated, and wet conditions.",
                     "Fungal",
                     "Remove infected parts. Improve airflow. Apply a fungicide as directed.",
                     orchidId);
@@ -131,12 +137,12 @@ public class DBHelper extends SQLiteOpenHelper {
             // Products
             long fungicideId = upsertProductByName(db,
                     "Copper-based Fungicide",
-                    12.99,
+                    1200.00,
                     "https://example.com/copper-fungicide");
 
             long bactericideId = upsertProductByName(db,
                     "Bactericide (Garden-safe)",
-                    10.49,
+                    1068.00,
                     "https://example.com/bactericide");
 
             // Link treatments

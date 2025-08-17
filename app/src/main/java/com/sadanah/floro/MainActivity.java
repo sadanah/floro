@@ -246,6 +246,14 @@ public class MainActivity extends AppCompatActivity {
             InferenceResult result = runInference(bitmap);
             String msg = "Prediction: " + result.label + " (" + String.format("%.1f", result.confidence * 100) + "%)";
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            // Navigate to ResultFragment
+            ResultFragment frag = ResultFragment.newInstance(result.label, result.confidence);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, frag)
+                    .addToBackStack("result")
+                    .commit();
+
 
         } catch (IOException e) {
             Toast.makeText(this, "Error decoding image: " + e.getMessage(), Toast.LENGTH_LONG).show();

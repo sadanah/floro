@@ -1,0 +1,101 @@
+{
+  "diseaseId": 1,
+  "diseaseName": "Anthracnose",
+  "diseaseType": "Fungal",
+  "diseaseDescription": "A common fungal disease affecting orchids, causing leaf spots and necrosis.",
+  "treatment": {
+    "culturalCare": [
+      {
+        "title": "Control Humidity",
+        "steps": [
+          "Keep relative humidity below 60–70%",
+          "Use air conditioning indoors if needed",
+          "Avoid overcrowding plants"
+        ]
+      },
+      {
+        "title": "Air Circulation",
+        "steps": [
+          "Place orchids with some space between them",
+          "Use a small fan to circulate air gently"
+        ]
+      },
+      {
+        "title": "Watering",
+        "steps": [
+          "Water early in the morning at the base or root zone",
+          "Ensure potting mix drains well; avoid standing water"
+        ]
+      },
+      {
+        "title": "Remove Diseased Leaves",
+        "steps": [
+          "Trim infected leaves with black patches",
+          "Burn or seal leaves in a bag immediately"
+        ]
+      },
+      {
+        "title": "Tool Hygiene",
+        "steps": [
+          "Clean scissors or shears after each cut",
+          "Use 70% alcohol or 10% bleach solution, then rinse"
+        ]
+      }
+    ],
+    "chemicalControl": [
+      {
+        "title": "Copper-based Fungicides",
+        "steps": [
+          "Use copper hydroxide or copper oxychloride at 2–3 g/L",
+          "Spray all leaves including undersides",
+          "Repeat every 7–10 days; avoid overuse"
+        ]
+      },
+      {
+        "title": "Mancozeb",
+        "steps": [
+          "Use 2 g/L solution",
+          "Cover all foliage evenly",
+          "Apply every 10–14 days"
+        ]
+      },
+      {
+        "title": "Systemic Fungicides",
+        "steps": [
+          "Use azoxystrobin or thiophanate-methyl",
+          "Follow label instructions carefully",
+          "Apply every 14–21 days to protect new growth"
+        ]
+      },
+      {
+        "title": "Rotation",
+        "steps": [
+          "Alternate copper, mancozeb, and systemic fungicides to prevent resistance"
+        ]
+      }
+    ],
+    "ecoFriendly": [
+      {
+        "title": "Neem Oil",
+        "steps": [
+          "Use 2–3 ml/L",
+          "Spray all plant surfaces weekly"
+        ]
+      },
+      {
+        "title": "Baking Soda Mix",
+        "steps": [
+          "Mix 1 tsp baking soda + few drops mild soap per liter of water",
+          "Spray leaves weekly to prevent fungus"
+        ]
+      },
+      {
+        "title": "Cinnamon Powder",
+        "steps": [
+          "Dust on minor leaf lesions after trimming",
+          "Acts as a natural fungicide"
+        ]
+      }
+    ]
+  }
+}

@@ -88,7 +88,10 @@ public class ChatFragment extends Fragment {
         editMessage = view.findViewById(R.id.editMessage);
         btnSend = view.findViewById(R.id.btnSend);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false) {{
+            setStackFromEnd(true); // newest messages appear at bottom
+        }});
         adapter = new ChatAdapter(messageList);
         recyclerView.setAdapter(adapter);
 
@@ -133,12 +136,16 @@ public class ChatFragment extends Fragment {
         message.setUserId(auth.getCurrentUser().getUid());
         message.setTopicId(topicRef);
         message.setMessageText(text);
-        message.setTimestamp(new Timestamp(System.currentTimeMillis() / 1000, 0));
+        message.setTimestamp(new Timestamp(System.currentTimeMillis() / 1000, 0)); // Firestore Timestamp
 
         db.collection("chatMessages")
                 .add(message)
                 .addOnSuccessListener(docRef -> editMessage.setText(""));
+
+        // Scroll immediately to new message
+        recyclerView.post(() -> recyclerView.scrollToPosition(messageList.size() - 1));
     }
+
 
 
 }

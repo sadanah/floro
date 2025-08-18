@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -13,7 +12,7 @@
         <TextView
             android:id="@+id/tv_title"
             android:textStyle="bold"
-            android:textSize="22sp"
+            android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Disease Name" />
@@ -32,6 +31,7 @@
             android:id="@+id/tv_plant"
             android:layout_marginTop="12dp"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:text="Plant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -40,58 +40,88 @@
         <TextView
             android:id="@+id/tv_type"
             android:layout_marginTop="8dp"
+            android:textSize="14sp"
             android:text="Type: "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <!-- Description -->
-        <TextView
-            android:id="@+id/tv_description_header"
+        <!-- Description Card -->
+        <androidx.cardview.widget.CardView
             android:layout_marginTop="16dp"
-            android:textStyle="bold"
-            android:text="Description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tv_description"
-            android:layout_marginTop="4dp"
-            android:text="—"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:padding="12dp">
 
-        <!-- Treatment -->
-        <TextView
-            android:id="@+id/tv_treatment_header"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_description_header"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:text="Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_marginTop="4dp"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="—"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Treatment Card -->
+        <androidx.cardview.widget.CardView
             android:layout_marginTop="16dp"
-            android:textStyle="bold"
-            android:text="Recommended treatment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:id="@+id/treatment_container"
-            android:orientation="vertical"
-            android:layout_marginTop="4dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:padding="12dp">
 
+            <LinearLayout
+                android:id="@+id/treatment_container"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-        <!-- Products -->
-        <TextView
-            android:id="@+id/tv_products_header"
+        <!-- Products Card -->
+        <androidx.cardview.widget.CardView
             android:layout_marginTop="16dp"
-            android:textStyle="bold"
-            android:text="Suggested products"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:id="@+id/products_container"
-            android:orientation="vertical"
-            android:layout_marginTop="4dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:padding="12dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_products_header"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:text="Suggested products"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:id="@+id/products_container"
+                    android:orientation="vertical"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 </ScrollView>

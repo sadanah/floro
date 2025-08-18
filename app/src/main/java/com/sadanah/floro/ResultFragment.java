@@ -60,11 +60,8 @@ public class ResultFragment extends Fragment {
         TextView tvConf  = view.findViewById(R.id.tv_confidence);
         TextView tvPlant = view.findViewById(R.id.tv_plant);
         TextView tvType  = view.findViewById(R.id.tv_type);
-        TextView tvDescH = view.findViewById(R.id.tv_description_header);
         TextView tvDesc  = view.findViewById(R.id.tv_description);
-        TextView tvTreatH= view.findViewById(R.id.tv_treatment_header);
         LinearLayout treatmentContainer = view.findViewById(R.id.treatment_container);
-        TextView tvProdH = view.findViewById(R.id.tv_products_header);
         LinearLayout productsContainer = view.findViewById(R.id.products_container);
 
         tvTitle.setText(diseaseName == null ? "Unknown" : diseaseName);
@@ -84,9 +81,6 @@ public class ResultFragment extends Fragment {
             tvType.setText("Type: —");
             tvDesc.setText("No disease information found.");
             treatmentContainer.removeAllViews();
-            tvDescH.setVisibility(View.VISIBLE);
-            tvTreatH.setVisibility(View.VISIBLE);
-            tvProdH.setVisibility(View.VISIBLE);
             productsContainer.removeAllViews();
             return;
         }

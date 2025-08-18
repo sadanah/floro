@@ -32,3 +32,4 @@ crashlytics-build.properties
 
 # Tensorflow Model
 orchid_custom_model.tflite
+*.tflite

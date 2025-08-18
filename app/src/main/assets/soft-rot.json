@@ -1,0 +1,77 @@
+{
+  "diseaseId": 2,
+  "diseaseName": "Soft Rot",
+  "diseaseType": "Bacterial",
+  "diseaseDescription": "A fast-spreading bacterial disease caused by Erwinia and Pectobacterium, leading to mushy, foul-smelling leaves, stems, and pseudobulbs, especially in hot and wet conditions.",
+  "treatment": {
+    "culturalCare": [
+      {
+        "title": "Control Humidity",
+        "steps": [
+          "Keep humidity between 50–60%",
+          "Use fans or open windows for airflow",
+          "Avoid overwatering to reduce excess moisture"
+        ]
+      },
+      {
+        "title": "Watering",
+        "steps": [
+          "Water in the morning so plants dry before night",
+          "Apply water at the base, not over leaves",
+          "Ensure potting media drains well"
+        ]
+      },
+      {
+        "title": "Remove Infected Tissue",
+        "steps": [
+          "Cut off mushy or rotting parts with sterile tools",
+          "Burn or bag infected tissue immediately",
+          "Disinfect cutting tools after each use"
+        ]
+      }
+    ],
+    "chemicalControl": [
+      {
+        "title": "Copper-based Bactericides",
+        "steps": [
+          "Use copper hydroxide 2–3 g/L",
+          "Spray all plant surfaces weekly",
+          "Avoid overuse to prevent plant damage"
+        ]
+      },
+      {
+        "title": "Quaternary Ammonium (Physan 20)",
+        "steps": [
+          "Mix 1 tsp/L solution",
+          "Mist all plant surfaces and potting media",
+          "Repeat as directed on label"
+        ]
+      },
+      {
+        "title": "Hydrogen Peroxide",
+        "steps": [
+          "Apply 3% solution directly to infected areas",
+          "Repeat treatment as needed",
+          "Monitor plants for reinfection"
+        ]
+      }
+    ],
+    "ecoFriendly": [
+      {
+        "title": "Cinnamon Powder",
+        "steps": [
+          "Dust on fresh cut surfaces after trimming",
+          "Acts as a natural antifungal and antibacterial"
+        ]
+      },
+      {
+        "title": "Neem Oil",
+        "steps": [
+          "Use 2–3 ml/L weekly",
+          "Spray all plant surfaces, including undersides",
+          "Avoid spraying in peak heat"
+        ]
+      }
+    ]
+  }
+}

@@ -9,7 +9,6 @@ import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -45,15 +44,9 @@ import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+
 import android.graphics.BitmapFactory;
 import java.io.InputStream;
-import java.io.IOException;
-import android.graphics.Bitmap.Config;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -140,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_home) f = new HomeFragment();
             else if (id == R.id.nav_search) f = new SearchFragment();
             else if (id == R.id.nav_profile) f = new ProfileFragment();
-            else if (id == R.id.nav_settings) f = new SettingsFragment();
+            else if (id == R.id.nav_forum) f = new TopicFragment();
             if (f != null) loadFragment(f);
             return true;
         });

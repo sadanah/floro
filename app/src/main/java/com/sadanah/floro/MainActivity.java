@@ -31,6 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sadanah.floro.forum.TopicFragment;
 
 
 import org.tensorflow.lite.Interpreter;
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_home) f = new HomeFragment();
             else if (id == R.id.nav_search) f = new SearchFragment();
             else if (id == R.id.nav_profile) f = new ProfileFragment();
-            else if (id == R.id.nav_settings) f = new SettingsFragment();
+            else if (id == R.id.nav_forum) f = new TopicFragment();
             if (f != null) loadFragment(f);
             return true;
         });

@@ -1,4 +1,4 @@
-package com.sadanah.floro.forum;
+package com.sadanah.floro;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +8,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sadanah.floro.R;
-import com.sadanah.floro.models.ChatTopic;
-
 import java.util.List;
 
 public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHolder> {
 
     private List<ChatTopic> topicList;
-    private final OnTopicClickListener listener;
+    private OnTopicClickListener listener;
 
     public interface OnTopicClickListener {
         void onTopicClick(ChatTopic topic);
@@ -39,8 +36,11 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHol
     public void onBindViewHolder(@NonNull TopicViewHolder holder, int position) {
         ChatTopic topic = topicList.get(position);
         holder.topicName.setText(topic.getTopicName());
-
-        holder.itemView.setOnClickListener(v -> listener.onTopicClick(topic));
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onTopicClick(topic);
+            }
+        });
     }
 
     @Override
@@ -57,3 +57,4 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHol
         }
     }
 }
+

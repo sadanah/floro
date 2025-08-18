@@ -1,4 +1,4 @@
-package com.sadanah.floro.forum;
+package com.sadanah.floro;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -7,14 +7,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.sadanah.floro.R;
-import com.sadanah.floro.models.ChatTopic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,18 +35,27 @@ public class TopicFragment extends Fragment {
 
         // Set up adapter with click listener
         adapter = new TopicAdapter(topicList, topic -> {
-            // Open ChatFragment and pass topicId and topicName
-            ChatFragment chatFragment = ChatFragment.newInstance(topic.getTopicId(), topic.getTopicName());
+            // --- ERROR CAUSE ---
+            // Previously, topic.getTopicId() could be null if Firestore document
+            // did not include a "topicId" field. Passing null to ChatFragment caused the crash.
+            String topicId = topic.getTopicId();
+            if (topicId == null || topicId.isEmpty()) {
+                Log.e("TopicFragment", "Topic ID is null, cannot open chat");
+                return; // Prevents crash
+            }
+
+            // Open ChatFragment with valid topicId
+            ChatFragment chatFragment = ChatFragment.newInstance(topicId, topic.getTopicName());
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, chatFragment)
-                    .addToBackStack("chat")
+                    .addToBackStack(null)
                     .commit();
         });
 
         recyclerView.setAdapter(adapter);
 
-        loadTopics();
+        loadTopics(); // Load topics from Firestore
 
         return view;
     }
@@ -60,10 +68,17 @@ public class TopicFragment extends Fragment {
                     topicList.clear();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         ChatTopic topic = doc.toObject(ChatTopic.class);
+
+                        // --- FIX: ensure topicId is never null ---
+                        // Firestore may not store "topicId" field; use document ID as fallback
+                        if (topic.getTopicId() == null || topic.getTopicId().isEmpty()) {
+                            topic.setTopicId(doc.getId());
+                        }
+
                         topicList.add(topic);
                     }
+
                     adapter.notifyDataSetChanged();
                 });
     }
-
 }

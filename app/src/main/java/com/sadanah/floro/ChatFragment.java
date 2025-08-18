@@ -1,12 +1,12 @@
-package com.sadanah.floro.forum;
+package com.sadanah.floro;
 
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,18 +14,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.sadanah.floro.R;
-import com.sadanah.floro.models.ChatMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.firebase.Timestamp;
 
 public class ChatFragment extends Fragment {
 
@@ -34,17 +31,19 @@ public class ChatFragment extends Fragment {
 
     private String topicId;
     private String topicName;
+    private com.google.firebase.firestore.DocumentReference topicRef;
 
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
     private List<ChatMessage> messageList = new ArrayList<>();
 
     private EditText editMessage;
-    private Button btnSend;
+    private ImageButton btnSend;
 
     private FirebaseFirestore db;
     private FirebaseAuth auth;
 
+    /** Use this method to create a new ChatFragment for a specific topic */
     public static ChatFragment newInstance(String topicId, String topicName) {
         ChatFragment fragment = new ChatFragment();
         Bundle args = new Bundle();
@@ -54,15 +53,35 @@ public class ChatFragment extends Fragment {
         return fragment;
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+
+        if (getArguments() != null) {
+            topicId = getArguments().getString(ARG_TOPIC_ID);
+            topicName = getArguments().getString(ARG_TOPIC_NAME);
+        }
+
+        if (topicId != null) {
+            topicRef = db.collection("chatTopics").document(topicId);
+        } else {
+            throw new IllegalArgumentException("ChatFragment requires a non-null topicId!");
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        if (getArguments() != null) {
-            topicId = getArguments().getString(ARG_TOPIC_ID);
-            topicName = getArguments().getString(ARG_TOPIC_NAME);
+        // Initialize Firebase only if not already initialized
+        if (FirebaseApp.getApps(requireContext()).isEmpty()) {
+            FirebaseApp.initializeApp(requireContext());
         }
 
         recyclerView = view.findViewById(R.id.recyclerViewChat);
@@ -73,9 +92,6 @@ public class ChatFragment extends Fragment {
         adapter = new ChatAdapter(messageList);
         recyclerView.setAdapter(adapter);
 
-        db = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
-
         loadMessages();
 
         btnSend.setOnClickListener(v -> sendMessage());
@@ -83,37 +99,46 @@ public class ChatFragment extends Fragment {
         return view;
     }
 
+
+
     private void loadMessages() {
-        CollectionReference messagesRef = db.collection("chatMessages");
-        messagesRef.whereEqualTo("topicId", topicId)
+        if (topicRef == null) return;
+
+        db.collection("chatMessages")
+                .whereEqualTo("topicId", topicRef)
                 .orderBy("timestamp")
-                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                .addSnapshotListener((querySnapshot, e) -> {
                     if (e != null) return;
 
                     messageList.clear();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        ChatMessage message = doc.toObject(ChatMessage.class);
-                        messageList.add(message);
+                    if (querySnapshot != null) {
+                        for (QueryDocumentSnapshot doc : querySnapshot) {
+                            ChatMessage msg = doc.toObject(ChatMessage.class);
+                            messageList.add(msg);
+                        }
                     }
                     adapter.notifyDataSetChanged();
-                    recyclerView.scrollToPosition(messageList.size() - 1);
+                    if (!messageList.isEmpty()) {
+                        recyclerView.scrollToPosition(messageList.size() - 1);
+                    }
                 });
     }
 
+
     private void sendMessage() {
         String text = editMessage.getText().toString().trim();
-        if (TextUtils.isEmpty(text)) return;
-
-        String userId = auth.getCurrentUser().getUid();
+        if (TextUtils.isEmpty(text) || topicRef == null || auth.getCurrentUser() == null) return;
 
         ChatMessage message = new ChatMessage();
+        message.setUserId(auth.getCurrentUser().getUid());
+        message.setTopicId(topicRef);
         message.setMessageText(text);
-        message.setTopicId(topicId);
-        message.setUserId(userId);
-        message.setTimestamp(System.currentTimeMillis());
+        message.setTimestamp(new Timestamp(System.currentTimeMillis() / 1000, 0));
 
         db.collection("chatMessages")
                 .add(message)
-                .addOnSuccessListener(documentReference -> editMessage.setText(""));
+                .addOnSuccessListener(docRef -> editMessage.setText(""));
     }
+
+
 }

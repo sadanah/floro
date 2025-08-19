@@ -72,6 +72,7 @@ dependencies {
 
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
+    implementation(libs.bcrypt)
 }
 
 apply(plugin = "com.google.gms.google-services")

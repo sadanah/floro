@@ -1,45 +1,53 @@
 package com.sadanah.floro;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ProgressBar;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Transaction;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    TextInputEditText edittextEmail, editTextPassword;
-    Button buttonReg;
-    FirebaseAuth mAuth;
-    ProgressBar progressBar;
-    TextView toLogin;
+    // UI components (match your XML)
+    private EditText editTextFirstName, editTextLastName, editTextCity, editTextPhone, editTextEmail, editTextPassword;
+    private Button buttonRegister;
+    private ProgressBar progressBar;
+
+    // Firebase
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
-    public void onStart(){
+    protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null){
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
     }
@@ -47,64 +55,134 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
-        edittextEmail = findViewById(R.id.email);
-        editTextPassword = findViewById(R.id.password);
-        buttonReg = findViewById(R.id.btn_register);
-        mAuth = FirebaseAuth.getInstance();
-        progressBar = findViewById(R.id.progressBar);
-        toLogin = findViewById(R.id.toLogin);
 
-        toLogin.setOnClickListener(new View.OnClickListener() {
+        // Init Firebase
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        // Bind views
+        editTextFirstName = findViewById(R.id.editTextFirstName);
+        editTextLastName  = findViewById(R.id.editTextLastName);
+        editTextCity      = findViewById(R.id.editTextCity);
+        editTextPhone     = findViewById(R.id.editTextPhone);
+        editTextEmail     = findViewById(R.id.editTextEmail);
+        editTextPassword  = findViewById(R.id.editTextPassword);
+        buttonRegister    = findViewById(R.id.buttonRegister);
+        progressBar       = findViewById(R.id.progressBar);
+
+        buttonRegister.setOnClickListener(v -> attemptRegister());
+
+        TextView toRegister = findViewById(R.id.toLogin);
+        toRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                // Navigate to RegisterActivity
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
+    }
 
-        buttonReg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-                String email, password;
-                email = String.valueOf(edittextEmail.getText());
-                password = String.valueOf(editTextPassword.getText());
+    private void attemptRegister() {
+        final String firstName = safeText(editTextFirstName);
+        final String lastName  = safeText(editTextLastName);
+        final String city      = safeText(editTextCity);
+        final String phone     = safeText(editTextPhone);
+        final String email     = safeText(editTextEmail);
+        final String password  = safeText(editTextPassword);
 
-                if(TextUtils.isEmpty(email)){
-                    Toast.makeText(RegisterActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
-                }
-                if(TextUtils.isEmpty(password)){
-                    Toast.makeText(RegisterActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
-                }
+        // Validate
+        if (TextUtils.isEmpty(firstName)) { editTextFirstName.setError("Required"); return; }
+        if (TextUtils.isEmpty(lastName))  { editTextLastName.setError("Required");  return; }
+        if (TextUtils.isEmpty(city))      { editTextCity.setError("Required");      return; }
+        if (TextUtils.isEmpty(phone))     { editTextPhone.setError("Required");     return; }
+        if (TextUtils.isEmpty(email))     { editTextEmail.setError("Required");     return; }
+        if (TextUtils.isEmpty(password))  { editTextPassword.setError("Required");  return; }
+        if (password.length() < 6)        { editTextPassword.setError("Min 6 chars"); return; }
 
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(RegisterActivity.this, "Account created.",
-                                            Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                    // Sign in success, update UI with the signed-in user's information
-                                    //Log.d(TAG, "createUserWithEmail:success");
-                                    //FirebaseUser user = mAuth.getCurrentUser();
-                                    //updateUI(user);
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                    //updateUI(null);
-                                }
-                            }
+        setLoading(true);
+
+        // Create Firebase Auth user
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, (Task<AuthResult> task) -> {
+                    if (!task.isSuccessful()) {
+                        setLoading(false);
+                        Toast.makeText(this,
+                                "Registration failed: " + (task.getException() != null ? task.getException().getMessage() : ""),
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                    if (firebaseUser != null) {
+                        // Optional: Send email verification
+                        firebaseUser.sendEmailVerification();
+
+                        final String authUid = firebaseUser.getUid();
+                        final String passwordHash = BCrypt.withDefaults().hashToString(12, password.toCharArray());
+
+                        // Reserve custom UID
+                        reserveNextUserId().addOnSuccessListener(customUserId -> {
+                            Map<String, Object> doc = new HashMap<>();
+                            doc.put("firstName", firstName);
+                            doc.put("lastName", lastName);
+                            doc.put("city", city);
+                            doc.put("phoneNumber", phone);
+                            doc.put("email", email);
+                            doc.put("passwordHash", passwordHash);
+                            doc.put("authUid", authUid);
+
+                            db.collection("users").document(customUserId)
+                                    .set(doc)
+                                    .addOnSuccessListener(aVoid -> {
+                                        setLoading(false);
+                                        Toast.makeText(RegisterActivity.this,
+                                                "Account created. Please verify your email.", Toast.LENGTH_LONG).show();
+                                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        setLoading(false);
+                                        Toast.makeText(RegisterActivity.this,
+                                                "Failed to save profile: " + e.getMessage(),
+                                                Toast.LENGTH_LONG).show();
+                                    });
+
+                        }).addOnFailureListener(e -> {
+                            setLoading(false);
+                            Toast.makeText(RegisterActivity.this,
+                                    "Failed to reserve user ID: " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
                         });
+                    }
+                });
+    }
+
+    private String safeText(EditText et) {
+        return et.getText() == null ? "" : et.getText().toString().trim();
+    }
+
+    private void setLoading(boolean loading) {
+        progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+        buttonRegister.setEnabled(!loading);
+    }
+
+    /**
+     * Atomically reserves the next user document ID (u_0001, u_0002, ...) using Firestore transaction.
+     */
+    private Task<String> reserveNextUserId() {
+        final DocumentReference countersRef = db.collection("meta").document("counters");
+        return db.runTransaction((Transaction.Function<String>) transaction -> {
+            DocumentSnapshot snap = transaction.get(countersRef);
+            long next;
+            if (snap.exists() && snap.getLong("nextUserNumber") != null) {
+                next = snap.getLong("nextUserNumber");
+            } else {
+                next = 1L;
             }
+            transaction.set(countersRef, Collections.singletonMap("nextUserNumber", next + 1L), SetOptions.merge());
+            return String.format(Locale.US, "u_%04d", next);
         });
     }
 }

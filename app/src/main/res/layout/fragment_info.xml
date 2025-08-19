@@ -16,6 +16,7 @@
             android:text="About Floro"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:paddingTop="20dp"
             android:paddingBottom="8dp"/>
 
         <TextView
@@ -25,14 +26,15 @@
             android:text="Floro is your companion for flower care and plant health.
 Easily detect diseases, find nearby flower shops and parks, and learn tips to help your plants bloom in grace."
             android:textSize="16sp"
+            android:lineSpacingExtra="2dp"
             android:paddingBottom="16dp"/>
 
         <TextView
             android:id="@+id/infoContact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Contact Us: support@floroapp.com"
-            android:textSize="14sp"/>
+            android:text="Contact Us: sadana.herath@gmail.com"
+            android:textSize="16sp"/>
 
     </LinearLayout>
 </ScrollView>

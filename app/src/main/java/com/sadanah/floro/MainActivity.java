@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     // Firebase
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private Button btnSettings;
+    private Button btnInfo;
     private ImageButton btnProfile;
     private TextView userDetails;
 
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Firebase views
         auth = FirebaseAuth.getInstance();
-        btnSettings = findViewById(R.id.btn_settings);
+        btnInfo = findViewById(R.id.btn_info);
         userDetails = findViewById(R.id.user_details);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
@@ -118,10 +118,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         } else {
             userDetails.setText(user.getEmail());
+            Fragment f = new HomeFragment();  // create the fragment
+            loadFragment(f);
         }
 
-        btnSettings.setOnClickListener(v -> {
-            Fragment f = new SettingsFragment();  // create the fragment
+        btnInfo.setOnClickListener(v -> {
+            Fragment f = new InfoFragment();  // create the fragment
             loadFragment(f);                     // load it in the container
         });
 

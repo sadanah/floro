@@ -17,12 +17,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +51,9 @@ public class AdminDashFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_dash, container, false);
 
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
+
         // Headers
         tvManageTopicsHeader = view.findViewById(R.id.tvManageTopicsHeader);
         tvManageMessagesHeader = view.findViewById(R.id.tvManageMessagesHeader);
@@ -64,24 +64,46 @@ public class AdminDashFragment extends Fragment {
         layoutManageMessages = view.findViewById(R.id.layoutManageMessages);
         layoutUserManagement = view.findViewById(R.id.layoutUserManagement);
 
-        // Set click listeners to toggle visibility
+        // Toggle sections
         tvManageTopicsHeader.setOnClickListener(v -> toggleSection(layoutManageTopics));
         tvManageMessagesHeader.setOnClickListener(v -> toggleSection(layoutManageMessages));
         tvUserManagementHeader.setOnClickListener(v -> toggleSection(layoutUserManagement));
 
-        // Optional: start with all collapsed
         layoutManageTopics.setVisibility(View.GONE);
         layoutManageMessages.setVisibility(View.GONE);
         layoutUserManagement.setVisibility(View.GONE);
+
+        // UI Elements
+        editTextTopicName = view.findViewById(R.id.editTextTopicName);
+        btnAddTopic = view.findViewById(R.id.btnAddTopic);
+        btnUserStats = view.findViewById(R.id.btnUserStats);
+
+        recyclerViewMessages = view.findViewById(R.id.recyclerViewMessages);
+        recyclerViewUsers = view.findViewById(R.id.recyclerViewUsers);
+
+        // Setup RecyclerViews
+        messagesAdapter = new MessagesAdapter(messageList);
+        recyclerViewMessages.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewMessages.setAdapter(messagesAdapter);
+
+        usersAdapter = new UsersAdapter(userList);
+        recyclerViewUsers.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewUsers.setAdapter(usersAdapter);
+
+        // Button listeners
+        btnAddTopic.setOnClickListener(v -> addTopic());
+        btnUserStats.setOnClickListener(v -> showUserStats());
+
+        // Load initial data
+        loadMessages();
+        loadUsers();
 
         return view;
     }
 
     private void toggleSection(LinearLayout section) {
-        if (section.getVisibility() == View.VISIBLE) section.setVisibility(View.GONE);
-        else section.setVisibility(View.VISIBLE);
+        section.setVisibility(section.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
     }
-
 
     /*** Add new chat topic ***/
     private void addTopic() {
@@ -115,17 +137,13 @@ public class AdminDashFragment extends Fragment {
                                 doc.getString("messageText"),
                                 doc.getString("messageImage"),
                                 doc.getString("userId"),
-                                doc.getDocumentReference("topicId") // ✅ Use getDocumentReference
+                                doc.getDocumentReference("topicId")
                         );
                         messageList.add(msg);
                     }
                     messagesAdapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Failed to load messages: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
-
 
     /*** Load users from Firestore ***/
     private void loadUsers() {
@@ -157,10 +175,9 @@ public class AdminDashFragment extends Fragment {
                     Map<String, Integer> cityCount = new HashMap<>();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String city = doc.getString("city");
-                        if (city != null) {
-                            cityCount.put(city, cityCount.getOrDefault(city, 0) + 1);
-                        }
+                        if (city != null) cityCount.put(city, cityCount.getOrDefault(city, 0) + 1);
                     }
+
                     StringBuilder stats = new StringBuilder("Total users: " + totalUsers + "\n\n");
                     for (Map.Entry<String, Integer> entry : cityCount.entrySet()) {
                         stats.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
@@ -174,12 +191,11 @@ public class AdminDashFragment extends Fragment {
                 });
     }
 
-    /*** ChatMessage Model ***/
+    /*** Models ***/
     static class ChatMessage {
         String id, messageText, messageImage, userId;
         DocumentReference topicRef;
-
-        public ChatMessage(String id, String messageText, String messageImage, String userId, DocumentReference topicRef) {
+        ChatMessage(String id, String messageText, String messageImage, String userId, DocumentReference topicRef) {
             this.id = id;
             this.messageText = messageText;
             this.messageImage = messageImage;
@@ -188,11 +204,9 @@ public class AdminDashFragment extends Fragment {
         }
     }
 
-    /*** UserProfile Model ***/
     static class UserProfile {
         String id, firstName, lastName, email, city, phoneNumber;
-
-        public UserProfile(String id, String firstName, String lastName, String email, String city, String phoneNumber) {
+        UserProfile(String id, String firstName, String lastName, String email, String city, String phoneNumber) {
             this.id = id;
             this.firstName = firstName;
             this.lastName = lastName;
@@ -202,13 +216,11 @@ public class AdminDashFragment extends Fragment {
         }
     }
 
-    /*** RecyclerView Adapter for Messages ***/
+    /*** Messages Adapter ***/
     class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessageViewHolder> {
         ArrayList<ChatMessage> messages;
 
-        MessagesAdapter(ArrayList<ChatMessage> messages) {
-            this.messages = messages;
-        }
+        MessagesAdapter(ArrayList<ChatMessage> messages) { this.messages = messages; }
 
         @NonNull
         @Override
@@ -219,18 +231,14 @@ public class AdminDashFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-            ChatMessage msg = messages.get(position);
-            holder.bind(msg);
+            holder.bind(messages.get(position));
         }
 
         @Override
-        public int getItemCount() {
-            return messages.size();
-        }
+        public int getItemCount() { return messages.size(); }
 
         class MessageViewHolder extends RecyclerView.ViewHolder {
             Button btnDeleteMessage;
-
             MessageViewHolder(@NonNull View itemView) {
                 super(itemView);
                 btnDeleteMessage = itemView.findViewById(R.id.btnDeleteMessage);
@@ -244,20 +252,16 @@ public class AdminDashFragment extends Fragment {
                                 Toast.makeText(getContext(), "Message deleted", Toast.LENGTH_SHORT).show();
                                 messages.remove(getAdapterPosition());
                                 notifyItemRemoved(getAdapterPosition());
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Delete failed", Toast.LENGTH_SHORT).show());
+                            });
                 });
             }
         }
     }
 
-    /*** RecyclerView Adapter for Users ***/
+    /*** Users Adapter ***/
     class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
         ArrayList<UserProfile> users;
-
-        UsersAdapter(ArrayList<UserProfile> users) {
-            this.users = users;
-        }
+        UsersAdapter(ArrayList<UserProfile> users) { this.users = users; }
 
         @NonNull
         @Override
@@ -268,18 +272,14 @@ public class AdminDashFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-            UserProfile user = users.get(position);
-            holder.bind(user);
+            holder.bind(users.get(position));
         }
 
         @Override
-        public int getItemCount() {
-            return users.size();
-        }
+        public int getItemCount() { return users.size(); }
 
         class UserViewHolder extends RecyclerView.ViewHolder {
             Button btnDeleteUser;
-
             UserViewHolder(@NonNull View itemView) {
                 super(itemView);
                 btnDeleteUser = itemView.findViewById(R.id.btnDeleteUser);
@@ -293,8 +293,7 @@ public class AdminDashFragment extends Fragment {
                                 Toast.makeText(getContext(), "User deleted", Toast.LENGTH_SHORT).show();
                                 users.remove(getAdapterPosition());
                                 notifyItemRemoved(getAdapterPosition());
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Delete failed", Toast.LENGTH_SHORT).show());
+                            });
                 });
             }
         }

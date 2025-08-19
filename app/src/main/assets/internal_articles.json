@@ -1,0 +1,30 @@
+{
+  "articles": [
+    {
+      "id": 1,
+      "title": "How to Identify Soft Rot",
+      "subtitle": "Quick guide for orchid care",
+      "content": [
+        "Soft rot is caused by Erwinia bacteria, leading to mushy leaves and stems.",
+        "High humidity and poor airflow increase susceptibility.",
+        "Cut infected areas immediately with sterilized tools."
+      ],
+      "image": "placeholder.png",
+      "tags": ["soft rot", "orchid care", "bacterial"],
+      "date": "2025-08-19"
+    },
+    {
+      "id": 2,
+      "title": "Anthracnose Prevention Tips",
+      "subtitle": "Keep your orchids healthy",
+      "content": [
+        "Anthracnose is a fungal disease causing black spots on leaves.",
+        "Ensure proper air circulation and avoid wet leaves.",
+        "Use recommended fungicides if needed."
+      ],
+      "image": "placeholder.png",
+      "tags": ["anthracnose", "fungal", "orchid"],
+      "date": "2025-08-19"
+    }
+  ]
+}

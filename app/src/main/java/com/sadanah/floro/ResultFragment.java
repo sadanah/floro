@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -157,18 +158,21 @@ public class ResultFragment extends Fragment {
 
     private JSONObject loadJsonFromAssets(String fileName) {
         try {
+            Log.d("DEBUG_JSON", "Attempting to open: " + fileName); // <- add this line
             InputStream is = requireContext().getAssets().open(fileName);
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
             String json = new String(buffer, "UTF-8");
+            Log.d("DEBUG_JSON", fileName + " content:\n" + json); // optional: see file content
             return new JSONObject(json).getJSONObject("treatment");
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
 
     private TextView makeSmallText(String text) {
         TextView tv = new TextView(requireContext());

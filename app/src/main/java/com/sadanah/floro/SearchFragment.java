@@ -35,6 +35,11 @@ public class SearchFragment extends Fragment {
         allDiseases = new ArrayList<>();
         allDiseases.add(new Disease("Anthracnose", "Fungal disease"));
         allDiseases.add(new Disease("Soft Rot", "Bacterial disease"));
+        allDiseases.add(new Disease("Black Rot", "Fungal disease"));
+        allDiseases.add(new Disease("Bacterial Brown Spot", "Bacterial disease"));
+        allDiseases.add(new Disease("Cymbidium Mosaic Virus", "Viral disease"));
+        allDiseases.add(new Disease("Leaf Spot", "Fungal"));
+        allDiseases.add(new Disease("Fusarium Wilt", "Fungal"));
 
         filteredDiseases = new ArrayList<>(allDiseases);
 

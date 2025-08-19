@@ -1,0 +1,20 @@
+{
+  "diseaseId": 5,
+  "diseaseName": "Cymbidium Mosaic Virus",
+  "diseaseType": "Viral",
+  "diseaseDescription": "A common viral pathogen in cultivated orchids, CymMV causes stunted growth, reduced flower production, color break in blooms, and blossom necrosis.",
+  "treatment": {
+    "culturalCare": [
+      {
+        "title": "Sanitation & Testing",
+        "steps": [
+          "Sanitize pruners between plants",
+          "Use ELISA or diagnostic testing when needed",
+          "Quarantine new or infected plants"
+        ]
+      }
+    ],
+    "chemicalControl": [],
+    "ecoFriendly": []
+  }
+}

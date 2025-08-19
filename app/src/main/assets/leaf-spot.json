@@ -1,0 +1,45 @@
+{
+  "diseaseId": 6,
+  "diseaseName": "Leaf Spot",
+  "diseaseType": "Fungal",
+  "diseaseDescription": "Caused by various fungal pathogens (e.g. Cercospora angreci, Septoria selenophomoides), leaf spots begin as yellowish lesions and progress to brown or black necrotic areas, reducing photosynthesis and overall vigor.",
+  "treatment": {
+    "culturalCare": [
+      {
+        "title": "Reduce Leaf Wetness",
+        "steps": [
+          "Avoid overhead watering and prevent prolonged moisture on leaves",
+          "Ensure good air circulation around the foliage",
+          "Quarantine new or visibly affected plants"
+        ]
+      },
+      {
+        "title": "Sanitation",
+        "steps": [
+          "Remove and dispose of infected leaves using sterile tools",
+          "Clean tools between cuts to avoid spread",
+          "Remove fallen debris around the plant"
+        ]
+      }
+    ],
+    "chemicalControl": [
+      {
+        "title": "Fungicide Applications",
+        "steps": [
+          "Use a fungicide labeled for leaf spot diseases",
+          "Cover leaf surfaces thoroughly",
+          "Reapply per label instructions"
+        ]
+      }
+    ],
+    "ecoFriendly": [
+      {
+        "title": "Cinnamon or Natural Antifungal",
+        "steps": [
+          "Apply a light dusting of cinnamon powder to spot-cleaned areas",
+          "Use as a natural barrier where practical"
+        ]
+      }
+    ]
+  }
+}

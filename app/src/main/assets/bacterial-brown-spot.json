@@ -1,0 +1,44 @@
+{
+  "diseaseId": 4,
+  "diseaseName": "Bacterial Brown Spot",
+  "diseaseType": "Bacterial",
+  "diseaseDescription": "Caused by Acidovorax (formerly Pseudomonas) cattleyae, it produces soft, water-soaked blisters that become brown or black, often oozing bacterial fluid, especially in humid, warm conditions.",
+  "treatment": {
+    "culturalCare": [
+      {
+        "title": "Humidity & Water Management",
+        "steps": [
+          "Reduce humidity and stop overhead watering",
+          "Improve air circulation",
+          "Keep leaves dry and avoid wet crowns"
+        ]
+      },
+      {
+        "title": "Remove Infected Tissue",
+        "steps": [
+          "Cut away blotches with sterile tools",
+          "Disinfect tools after each use",
+          "Treat nearby plants preventively"
+        ]
+      }
+    ],
+    "chemicalControl": [
+      {
+        "title": "Bactericide Sprays",
+        "steps": [
+          "Apply Physan 20 (quaternary ammonium) or copper compounds",
+          "Treat both infected and adjacent plants following label"
+        ]
+      }
+    ],
+    "ecoFriendly": [
+      {
+        "title": "Hydrogen Peroxide",
+        "steps": [
+          "Use dilute H₂O₂ on cleaned surfaces",
+          "Helps sanitize and prevent further spread"
+        ]
+      }
+    ]
+  }
+}

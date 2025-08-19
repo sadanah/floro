@@ -1,0 +1,49 @@
+{
+  "diseaseId": 3,
+  "diseaseName": "Black Rot",
+  "diseaseType": "Fungal",
+  "diseaseDescription": "A destructive fungal disease caused by Pythium and Phytophthora species, leading to water-soaked, sunken black lesions on leaves, pseudobulbs, and roots, spreading rapidly in damp conditions.",
+  "treatment": {
+    "culturalCare": [
+      {
+        "title": "Sanitation & Isolation",
+        "steps": [
+          "Isolate infected plants immediately",
+          "Sterilize pots, media, and tools before reuse",
+          "Avoid splashing water to reduce spread",
+          "Remove heavily infected plant material"
+        ]
+      },
+      {
+        "title": "Ideal Moisture & Airflow",
+        "steps": [
+          "Ensure potting media drains well",
+          "Avoid overwatering",
+          "Provide good air circulation and avoid leaf wetness",
+          "Keep humidity moderate (50-60%)"
+        ]
+      }
+    ],
+    "chemicalControl": [
+      {
+        "title": "Fungicides",
+        "steps": [
+          "Apply metalaxyl, fosetyl-Al, or etridiazole as directed",
+          "Use copper sulfate or lime poultice on lesions",
+          "Reapply according to label instructions",
+          "Follow safety instructions and wear gloves"
+        ]
+      }
+    ],
+    "ecoFriendly": [
+      {
+        "title": "Cinnamon or Copper-Lime Paste",
+        "steps": [
+          "Apply cinnamon or copper-lime paste to cut wounds",
+          "Acts as natural fungicidal barrier",
+          "Repeat application as needed after rainfall or watering"
+        ]
+      }
+    ]
+  }
+}

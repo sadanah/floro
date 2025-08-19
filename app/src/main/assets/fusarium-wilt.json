@@ -1,0 +1,36 @@
+{
+  "diseaseId": 7,
+  "diseaseName": "Fusarium Wilt",
+  "diseaseType": "Fungal",
+  "diseaseDescription": "Caused by Fusarium oxysporum, this disease invades roots or rhizomes, leading to vascular blockage, purplish discoloration, wilting leaves, and eventual plant death in humid, warm conditions.",
+  "treatment": {
+    "culturalCare": [
+      {
+        "title": "Hygiene & Isolation",
+        "steps": [
+          "Isolate infected plants immediately",
+          "Sterilize all tools between cuts",
+          "Repot into fresh, clean medium"
+        ]
+      }
+    ],
+    "chemicalControl": [
+      {
+        "title": "Systemic Fungicides",
+        "steps": [
+          "Remove diseased tissue cutting into healthy tissue",
+          "Apply systemic fungicide labeled for Fusarium",
+          "Drench the root zone and pans with fungicide"
+        ]
+      }
+    ],
+    "ecoFriendly": [
+      {
+        "title": "None Effective",
+        "steps": [
+          "No reliable eco-friendly treatments available; strict hygiene and prevention are best"
+        ]
+      }
+    ]
+  }
+}

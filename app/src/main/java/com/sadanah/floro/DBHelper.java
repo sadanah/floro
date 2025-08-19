@@ -110,19 +110,16 @@ public class DBHelper extends SQLiteOpenHelper {
     private void seedIfEmpty(SQLiteDatabase db) {
         if (isTableEmpty(db, T_PLANTS)) {
             long orchidId = insertPlant(db, "Orchid",
-                    "Orchids (family Orchidaceous) are one of the largest groups of flowering plants, " +
+                    "Orchids (family Orchidaceae) are one of the largest groups of flowering plants, " +
                             "with about 28,000 species in 880 genera. Found in nearly all habitats except glaciers, " +
                             "they are most diverse in the tropics. Known for their colorful, intricate blooms, " +
-                            "orchids have long been cultivated for ornamental, medicinal, and culinary " +
-                            "uses (e.g., vanilla).",
+                            "orchids have long been cultivated for ornamental, medicinal, and culinary uses (e.g., vanilla).",
                     "orchid.png");
 
             // Diseases
             long anthracnoseId = insertDisease(db,
                     "Anthracnose",
-                    "Anthracnose in orchids, caused by Colletotrichum fungi, appears as " +
-                            "black leaf spots starting at the tips and spreading downward, " +
-                            "thriving in humid, poorly ventilated, and wet conditions.",
+                    "Anthracnose in orchids, caused by Colletotrichum fungi, appears as black leaf spots starting at the tips and spreading downward, thriving in humid, poorly ventilated, and wet conditions.",
                     "Fungal",
                     "anthracnose.json",
                     orchidId);
@@ -134,22 +131,75 @@ public class DBHelper extends SQLiteOpenHelper {
                     "soft-rot.json",
                     orchidId);
 
+            long blackRotId = insertDisease(db,
+                    "Black Rot",
+                    "A destructive fungal disease caused by Pythium and Phytophthora species, leading to water-soaked, sunken black lesions on leaves, pseudobulbs, and roots, spreading rapidly in damp conditions.",
+                    "Fungal",
+                    "black-rot.json",
+                    orchidId);
+
+            long bacterialBrownSpotId = insertDisease(db,
+                    "Bacterial Brown Spot",
+                    "A bacterial disease causing brown, water-soaked lesions on leaves, often with yellow halos.",
+                    "Bacterial",
+                    "bacterial-brown-spot.json",
+                    orchidId);
+
+            long cymbidiumMosaicVirusId = insertDisease(db,
+                    "Cymbidium Mosaic Virus",
+                    "A viral infection causing mosaic patterns on leaves, stunted growth, and deformed flowers.",
+                    "Viral",
+                    "cymbidium-mosaic-virus.json",
+                    orchidId);
+
+            long leafSpotId = insertDisease(db,
+                    "Leaf Spot",
+                    "A fungal disease characterized by round or irregular spots on leaves, often with a yellow halo.",
+                    "Fungal",
+                    "leaf-spot.json",
+                    orchidId);
+
+            long fusariumWiltId = insertDisease(db,
+                    "Fusarium Wilt",
+                    "A soil-borne fungal disease causing yellowing of leaves, wilting, and vascular discoloration.",
+                    "Fungal",
+                    "fusarium-wilt.json",
+                    orchidId);
+
             // Products
             long fungicideId = upsertProductByName(db,
                     "Copper-based Fungicide",
                     1200.00,
-                    "https://example.com/copper-fungicide");
+                    "https://www.ubuy.com.lk/en/product/2CQRPW2S-southern-ag-liquid-copper-fungicide-fungicide-16oz");
 
             long bactericideId = upsertProductByName(db,
                     "Bactericide (Garden-safe)",
                     1068.00,
-                    "https://example.com/bactericide");
+                    "https://www.ubuy.com.lk/en/product/JFWH3XPWW-32-oz-fungicide-and-32-oz-insecticidal-soap-ready-to-use-sprays-2-count");
+
+            long blackFungicideId = upsertProductByName(db,
+                    "Fungicide (General-purpose)",
+                    1500.00,
+                    "https://www.ubuy.com.lk/en/product/NKDWH6-bonide-bnd862-fungal-disease-control-mancozeb-flowable-with-zinc-fungicide-concentrate-16-oz");
+
+            long organicFungicideId = upsertProductByName(db,
+                    "Organic Fungicide",
+                    700.00,
+                    "https://www.daraz.lk/products/organic-fungicide-for-all-kind-of-plant-bacteria-i125439707.html");
 
             // Link treatments
             linkDiseaseToProduct(db, anthracnoseId, fungicideId);
             linkDiseaseToProduct(db, softRotId, bactericideId);
+            linkDiseaseToProduct(db, blackRotId, blackFungicideId);
+            linkDiseaseToProduct(db, bacterialBrownSpotId, bactericideId);
+            linkDiseaseToProduct(db, cymbidiumMosaicVirusId, fungicideId);
+            linkDiseaseToProduct(db, leafSpotId, fungicideId);
+            linkDiseaseToProduct(db, fusariumWiltId, fungicideId);
+            linkDiseaseToProduct(db, anthracnoseId, organicFungicideId);
+            linkDiseaseToProduct(db, blackRotId, organicFungicideId);
         }
     }
+
 
     private boolean isTableEmpty(SQLiteDatabase db, String table) {
         Cursor c = null;

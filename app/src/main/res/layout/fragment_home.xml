@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="90dp"
-    android:fillViewport="true"
-    android:background="@color/white">
+    android:fillViewport="true">
 
     <LinearLayout
         android:orientation="vertical"
@@ -128,13 +127,14 @@
                         android:layout_height="35dp"
                         android:layout_marginTop="5dp"
                         android:src="@drawable/ic_add_photo"
+                        app:tint="@color/purple_500"
                         android:contentDescription="Scan"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Scan"
-                        android:textColor="@color/black"
+                        android:textColor="@color/purple_500"
                         android:textSize="14sp"
                         android:paddingTop="2dp"/>
                 </LinearLayout>
@@ -165,13 +165,14 @@
                         android:layout_height="35dp"
                         android:layout_marginTop="5dp"
                         android:src="@drawable/ic_search"
+                        app:tint="@color/purple_500"
                         android:contentDescription="Catalogue"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Catalogue"
-                        android:textColor="@color/black"
+                        android:textColor="@color/purple_500"
                         android:textSize="14sp"
                         android:paddingTop="2dp"/>
                 </LinearLayout>
@@ -202,13 +203,14 @@
                         android:layout_height="35dp"
                         android:layout_marginTop="5dp"
                         android:src="@drawable/ic_forum"
+                        app:tint="@color/purple_500"
                         android:contentDescription="Forums"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Forums"
-                        android:textColor="@color/black"
+                        android:textColor="@color/purple_500"
                         android:textSize="14sp"
                         android:paddingTop="2dp"/>
                 </LinearLayout>
@@ -239,13 +241,14 @@
                         android:layout_height="35dp"
                         android:layout_marginTop="5dp"
                         android:src="@drawable/ic_info"
+                        app:tint="@color/purple_500"
                         android:contentDescription="Info"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Info"
-                        android:textColor="@color/black"
+                        android:textColor="@color/purple_500"
                         android:textSize="14sp"
                         android:paddingTop="2dp"/>
                 </LinearLayout>
@@ -276,13 +279,14 @@
                         android:layout_height="35dp"
                         android:layout_marginTop="5dp"
                         android:src="@drawable/ic_map"
+                        app:tint="@color/purple_500"
                         android:contentDescription="Map"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Map"
-                        android:textColor="@color/black"
+                        android:textColor="@color/purple_500"
                         android:textSize="14sp"
                         android:paddingTop="2dp"/>
                 </LinearLayout>
@@ -313,13 +317,14 @@
                         android:layout_height="35dp"
                         android:layout_marginTop="5dp"
                         android:src="@drawable/ic_articles"
+                        app:tint="@color/purple_500"
                         android:contentDescription="Articles"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Articles"
-                        android:textColor="@color/black"
+                        android:textColor="@color/purple_500"
                         android:textSize="14sp"
                         android:paddingTop="2dp"/>
                 </LinearLayout>

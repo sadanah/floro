@@ -9,4 +9,5 @@
     <!-- Optional for backgrounds, borders, etc. -->
     <color name="lavender">#A18AFD</color>
     <color name="light_lavender">#BCADF8</color>
+    <color name="lighter_lavender">#D5CBFD</color>
 </resources>

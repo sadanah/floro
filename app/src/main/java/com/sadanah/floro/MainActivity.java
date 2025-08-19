@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ---------- Handle Image ----------
-    private void handleImageUri(@NonNull Uri uri) {
+    public void handleImageUri(@NonNull Uri uri) {
         try {
             Bitmap bitmap = decodeBitmap(uri);
             if (bitmap == null) {

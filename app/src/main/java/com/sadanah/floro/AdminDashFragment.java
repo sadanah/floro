@@ -7,9 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,39 +42,46 @@ public class AdminDashFragment extends Fragment {
     private ArrayList<ChatMessage> messageList = new ArrayList<>();
     private ArrayList<UserProfile> userList = new ArrayList<>();
 
+    private LinearLayout layoutManageTopics, layoutManageMessages, layoutUserManagement;
+    private TextView tvManageTopicsHeader, tvManageMessagesHeader, tvUserManagementHeader;
+
     public AdminDashFragment() { }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_dash, container, false);
 
-        db = FirebaseFirestore.getInstance();
+        // Headers
+        tvManageTopicsHeader = view.findViewById(R.id.tvManageTopicsHeader);
+        tvManageMessagesHeader = view.findViewById(R.id.tvManageMessagesHeader);
+        tvUserManagementHeader = view.findViewById(R.id.tvUserManagementHeader);
 
-        editTextTopicName = view.findViewById(R.id.editTextTopicName);
-        btnAddTopic = view.findViewById(R.id.btnAddTopic);
-        btnUserStats = view.findViewById(R.id.btnUserStats);
-        recyclerViewMessages = view.findViewById(R.id.recyclerViewMessages);
-        recyclerViewUsers = view.findViewById(R.id.recyclerViewUsers);
+        // Layouts
+        layoutManageTopics = view.findViewById(R.id.layoutManageTopics);
+        layoutManageMessages = view.findViewById(R.id.layoutManageMessages);
+        layoutUserManagement = view.findViewById(R.id.layoutUserManagement);
 
-        // Setup RecyclerViews
-        messagesAdapter = new MessagesAdapter(messageList);
-        recyclerViewMessages.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewMessages.setAdapter(messagesAdapter);
+        // Set click listeners to toggle visibility
+        tvManageTopicsHeader.setOnClickListener(v -> toggleSection(layoutManageTopics));
+        tvManageMessagesHeader.setOnClickListener(v -> toggleSection(layoutManageMessages));
+        tvUserManagementHeader.setOnClickListener(v -> toggleSection(layoutUserManagement));
 
-        usersAdapter = new UsersAdapter(userList);
-        recyclerViewUsers.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewUsers.setAdapter(usersAdapter);
-
-        // Listeners
-        btnAddTopic.setOnClickListener(v -> addTopic());
-        btnUserStats.setOnClickListener(v -> showUserStats());
-
-        loadMessages();
-        loadUsers();
+        // Optional: start with all collapsed
+        layoutManageTopics.setVisibility(View.GONE);
+        layoutManageMessages.setVisibility(View.GONE);
+        layoutUserManagement.setVisibility(View.GONE);
 
         return view;
     }
+
+    private void toggleSection(LinearLayout section) {
+        if (section.getVisibility() == View.VISIBLE) section.setVisibility(View.GONE);
+        else section.setVisibility(View.VISIBLE);
+    }
+
 
     /*** Add new chat topic ***/
     private void addTopic() {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,13 +34,8 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    // UI (must match your XML)
-    private EditText editTextFirstName;
-    private EditText editTextLastName;
-    private EditText editTextCity;
-    private EditText editTextPhone;
-    private EditText editTextEmail;
-    private EditText editTextPassword;
+    // UI components (match your XML)
+    private EditText editTextFirstName, editTextLastName, editTextCity, editTextPhone, editTextEmail, editTextPassword;
     private Button buttonRegister;
     private ProgressBar progressBar;
 
@@ -49,7 +46,6 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Optional: if already signed in, go to main
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
@@ -65,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Bind views (IDs from your XML)
+        // Bind views
         editTextFirstName = findViewById(R.id.editTextFirstName);
         editTextLastName  = findViewById(R.id.editTextLastName);
         editTextCity      = findViewById(R.id.editTextCity);
@@ -76,6 +72,16 @@ public class RegisterActivity extends AppCompatActivity {
         progressBar       = findViewById(R.id.progressBar);
 
         buttonRegister.setOnClickListener(v -> attemptRegister());
+
+        TextView toRegister = findViewById(R.id.toLogin);
+        toRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Navigate to RegisterActivity
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void attemptRegister() {
@@ -86,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
         final String email     = safeText(editTextEmail);
         final String password  = safeText(editTextPassword);
 
-        // Basic validation
+        // Validate
         if (TextUtils.isEmpty(firstName)) { editTextFirstName.setError("Required"); return; }
         if (TextUtils.isEmpty(lastName))  { editTextLastName.setError("Required");  return; }
         if (TextUtils.isEmpty(city))      { editTextCity.setError("Required");      return; }
@@ -108,56 +114,48 @@ public class RegisterActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // Hash password (store only hash in Firestore)
-                    final String passwordHash = BCrypt.withDefaults().hashToString(12, password.toCharArray());
-                    final String authUid = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
+                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                    if (firebaseUser != null) {
+                        // Optional: Send email verification
+                        firebaseUser.sendEmailVerification();
 
-                    // Reserve a custom user ID like u_0001 via transaction
-                    reserveNextUserId()
-                            .addOnSuccessListener(new OnSuccessListener<String>() {
-                                @Override
-                                public void onSuccess(String customUserId) {
-                                    // Build user document
-                                    Map<String, Object> doc = new HashMap<>();
-                                    doc.put("firstName", firstName);
-                                    doc.put("lastName", lastName);
-                                    doc.put("city", city);
-                                    doc.put("phoneNumber", phone);
-                                    doc.put("email", email);
-                                    doc.put("passwordHash", passwordHash); // 🔒 hashed
-                                    doc.put("authUid", authUid);
+                        final String authUid = firebaseUser.getUid();
+                        final String passwordHash = BCrypt.withDefaults().hashToString(12, password.toCharArray());
 
-                                    db.collection("users")
-                                            .document(customUserId)
-                                            .set(doc)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    setLoading(false);
-                                                    Toast.makeText(RegisterActivity.this,
-                                                            "Account created", Toast.LENGTH_SHORT).show();
-                                                    // Go to Login (or Main)
-                                                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                                    finish();
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    setLoading(false);
-                                                    Toast.makeText(RegisterActivity.this,
-                                                            "Failed to save profile: " + e.getMessage(),
-                                                            Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-                                }
-                            })
-                            .addOnFailureListener(e -> {
-                                setLoading(false);
-                                Toast.makeText(RegisterActivity.this,
-                                        "Failed to reserve user ID: " + e.getMessage(),
-                                        Toast.LENGTH_LONG).show();
-                            });
+                        // Reserve custom UID
+                        reserveNextUserId().addOnSuccessListener(customUserId -> {
+                            Map<String, Object> doc = new HashMap<>();
+                            doc.put("firstName", firstName);
+                            doc.put("lastName", lastName);
+                            doc.put("city", city);
+                            doc.put("phoneNumber", phone);
+                            doc.put("email", email);
+                            doc.put("passwordHash", passwordHash);
+                            doc.put("authUid", authUid);
+
+                            db.collection("users").document(customUserId)
+                                    .set(doc)
+                                    .addOnSuccessListener(aVoid -> {
+                                        setLoading(false);
+                                        Toast.makeText(RegisterActivity.this,
+                                                "Account created. Please verify your email.", Toast.LENGTH_LONG).show();
+                                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        setLoading(false);
+                                        Toast.makeText(RegisterActivity.this,
+                                                "Failed to save profile: " + e.getMessage(),
+                                                Toast.LENGTH_LONG).show();
+                                    });
+
+                        }).addOnFailureListener(e -> {
+                            setLoading(false);
+                            Toast.makeText(RegisterActivity.this,
+                                    "Failed to reserve user ID: " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        });
+                    }
                 });
     }
 
@@ -171,8 +169,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     * Atomically reserves the next user document ID (u_0001, u_0002, ...) using a Firestore transaction.
-     * Uses/creates meta/counters { nextUserNumber: <long> }.
+     * Atomically reserves the next user document ID (u_0001, u_0002, ...) using Firestore transaction.
      */
     private Task<String> reserveNextUserId() {
         final DocumentReference countersRef = db.collection("meta").document("counters");
@@ -182,13 +179,9 @@ public class RegisterActivity extends AppCompatActivity {
             if (snap.exists() && snap.getLong("nextUserNumber") != null) {
                 next = snap.getLong("nextUserNumber");
             } else {
-                next = 1L; // initialize counter if missing
+                next = 1L;
             }
-            // increment for next time
-            Map<String, Object> update = Collections.singletonMap("nextUserNumber", next + 1L);
-            transaction.set(countersRef, update, SetOptions.merge());
-
-            // Format u_0001
+            transaction.set(countersRef, Collections.singletonMap("nextUserNumber", next + 1L), SetOptions.merge());
             return String.format(Locale.US, "u_%04d", next);
         });
     }

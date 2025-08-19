@@ -1,10 +1,10 @@
 package com.sadanah.floro;
 
 import androidx.annotation.Nullable;
-
+import java.io.Serializable;
 import java.util.List;
 
-public class Article {
+public class Article implements Serializable {
     public int id;
     public String title;
     public String subtitle;
@@ -14,6 +14,6 @@ public class Article {
     public String date;
     @Nullable
     public String link;
-    @Nullable public Double price_lkr;
+    @Nullable
+    public Double price_lkr;
 }
-

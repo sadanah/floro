@@ -19,23 +19,32 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticlesFragment extends Fragment {
+public class ArticlesFragment extends Fragment implements ArticlesAdapter.OnArticleClickListener {
 
-    private RecyclerView recyclerView;
-    private List<Article> articles = new ArrayList<>();
+    private RecyclerView internalRecyclerView, externalRecyclerView;
+    private List<Article> internalArticles = new ArrayList<>();
+    private List<Article> externalArticles = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_articles, container, false);
-        recyclerView = view.findViewById(R.id.articlesRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        loadArticlesFromAssets("internal_articles.json"); // or external_articles.json
+
+        internalRecyclerView = view.findViewById(R.id.internalRecyclerView);
+        externalRecyclerView = view.findViewById(R.id.externalRecyclerView);
+
+        internalRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        externalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        loadArticlesFromAssets("internal_articles.json", true);
+        loadArticlesFromAssets("external_articles.json", false);
+
         return view;
     }
 
-    private void loadArticlesFromAssets(String fileName) {
+    private void loadArticlesFromAssets(String fileName, boolean isInternal) {
         try {
             InputStream is = requireContext().getAssets().open(fileName);
             int size = is.available();
@@ -47,6 +56,8 @@ public class ArticlesFragment extends Fragment {
             JSONObject obj = new JSONObject(jsonStr);
             JSONArray arr = obj.getJSONArray("articles");
 
+            List<Article> targetList = isInternal ? internalArticles : externalArticles;
+
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject a = arr.getJSONObject(i);
                 Article article = new Article();
@@ -57,22 +68,40 @@ public class ArticlesFragment extends Fragment {
                 JSONArray contentArray = a.getJSONArray("content");
                 for (int j = 0; j < contentArray.length(); j++)
                     article.content.add(contentArray.getString(j));
+
                 article.image = a.optString("image", null);
+
                 article.tags = new ArrayList<>();
                 JSONArray tagsArray = a.optJSONArray("tags");
                 if (tagsArray != null)
                     for (int j = 0; j < tagsArray.length(); j++)
                         article.tags.add(tagsArray.getString(j));
+
                 article.date = a.optString("date", "");
                 article.link = a.optString("link", null);
                 if (!a.isNull("price_lkr")) article.price_lkr = a.getDouble("price_lkr");
-                articles.add(article);
+
+                targetList.add(article);
             }
 
-            recyclerView.setAdapter(new ArticlesAdapter(articles));
+            if (isInternal)
+                internalRecyclerView.setAdapter(new ArticlesAdapter(internalArticles, this));
+            else
+                externalRecyclerView.setAdapter(new ArticlesAdapter(externalArticles, this));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // Open full article fragment when an article is clicked
+    @Override
+    public void onArticleClick(Article article) {
+        ArticleDetailsFragment fragment = ArticleDetailsFragment.newInstance(article);
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment) // activity container ID
+                .addToBackStack(null)
+                .commit();
     }
 }

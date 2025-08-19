@@ -15,10 +15,16 @@ import java.util.List;
 
 public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ArticleViewHolder> {
 
-    private final List<Article> articles;
+    public interface OnArticleClickListener {
+        void onArticleClick(Article article);
+    }
 
-    public ArticlesAdapter(List<Article> articles) {
+    private List<Article> articles;
+    private OnArticleClickListener listener;
+
+    public ArticlesAdapter(List<Article> articles, OnArticleClickListener listener) {
         this.articles = articles;
+        this.listener = listener;
     }
 
     @NonNull
@@ -35,19 +41,18 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         holder.title.setText(article.title);
         holder.subtitle.setText(article.subtitle);
 
+        // Load image from assets if available
         if (article.image != null && !article.image.isEmpty()) {
-            holder.image.setVisibility(View.VISIBLE);
+            holder.imageView.setVisibility(View.VISIBLE);
+            String assetPath = "file:///android_asset/images/" + article.image;
             Glide.with(holder.itemView.getContext())
-                    .load("file:///android_asset/images/" + article.image)
-                    .into(holder.image);
+                    .load(assetPath)
+                    .into(holder.imageView);
         } else {
-            holder.image.setVisibility(View.GONE);
+            holder.imageView.setVisibility(View.GONE);
         }
 
-        // Optional: handle clicks
-        holder.itemView.setOnClickListener(v -> {
-            // e.g., open a detail fragment or activity
-        });
+        holder.itemView.setOnClickListener(v -> listener.onArticleClick(article));
     }
 
     @Override
@@ -56,15 +61,14 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     }
 
     static class ArticleViewHolder extends RecyclerView.ViewHolder {
-        ImageView image;
         TextView title, subtitle;
+        ImageView imageView;
 
         public ArticleViewHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.articleImage);
             title = itemView.findViewById(R.id.articleTitle);
             subtitle = itemView.findViewById(R.id.articleSubtitle);
+            imageView = itemView.findViewById(R.id.articleImage); // make sure this exists in item_article.xml
         }
     }
 }
-

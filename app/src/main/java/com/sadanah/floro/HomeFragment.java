@@ -154,7 +154,7 @@ public class HomeFragment extends Fragment {
 
     // Navigate to Info
     private void navigateToInfo() {
-        HomeFragment fragment = new HomeFragment();
+        InfoFragment fragment = new InfoFragment();
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)

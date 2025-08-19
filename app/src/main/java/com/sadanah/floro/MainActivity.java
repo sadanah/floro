@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.nav_home) f = new HomeFragment();
             else if (id == R.id.nav_search) f = new SearchFragment();
-            else if (id == R.id.nav_profile) f = new ProfileFragment();
+            else if (id == R.id.nav_articles) f = new ArticlesFragment();
             else if (id == R.id.nav_forum) f = new TopicFragment();
             if (f != null) loadFragment(f);
             return true;

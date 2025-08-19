@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
     // Firebase
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private Button btnLogout;
+    private Button btnSettings;
+    private ImageButton btnProfile;
     private TextView userDetails;
 
     // Bottom nav + FAB
@@ -98,10 +101,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Firebase views
         auth = FirebaseAuth.getInstance();
-        btnLogout = findViewById(R.id.btn_logout);
+        btnSettings = findViewById(R.id.btn_settings);
         userDetails = findViewById(R.id.user_details);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
+
+        btnProfile = findViewById(R.id.btn_profile);
 
         bottomNavigationView.setBackground(null);
         bottomNavigationView.getMenu().getItem(2).setEnabled(false);
@@ -115,10 +120,14 @@ public class MainActivity extends AppCompatActivity {
             userDetails.setText(user.getEmail());
         }
 
-        btnLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            finish();
+        btnSettings.setOnClickListener(v -> {
+            Fragment f = new SettingsFragment();  // create the fragment
+            loadFragment(f);                     // load it in the container
+        });
+
+        btnProfile.setOnClickListener(v -> {
+            Fragment f = new ProfileFragment();  // create the fragment
+            loadFragment(f);                     // load it in the container
         });
 
         // Load default fragment
@@ -439,10 +448,10 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new HomeFragment();
             } else if (id == R.id.nav_search) {
                 selectedFragment = new SearchFragment();
-            } else if (id == R.id.nav_profile) {
-                selectedFragment = new ProfileFragment();
-            } else if (id == R.id.nav_settings) {
-                selectedFragment = new SettingsFragment();
+            } else if (id == R.id.nav_articles) {
+                selectedFragment = new ArticlesFragment();
+            } else if (id == R.id.nav_forum) {
+                selectedFragment = new TopicFragment();
             }
 
             if (selectedFragment != null) {

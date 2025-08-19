@@ -50,6 +50,8 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 
+bcrypt = { module = "at.favre.lib:bcrypt", version = "0.9.0" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }

@@ -21,20 +21,34 @@
             android:padding="16dp"
             android:background="@color/light_lavender">
 
+            <ImageButton
+                android:id="@+id/btn_profile"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/round_button_bg"
+                android:padding="8dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_profile"
+                app:tint="@color/lighter_lavender"
+                android:scaleType="centerInside"
+                android:contentDescription="Take Scan"/>
+
             <TextView
                 android:id="@+id/user_details"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/user_email"
-                android:textSize="18sp"
-                android:textColor="#000000" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="10dp"
+                android:textColor="@color/purple_700" />
 
             <Button
-                android:id="@+id/btn_logout"
+                android:id="@+id/btn_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/logout" />
+                android:text="Settings" />
         </LinearLayout>
 
         <!-- Fragment container -->

@@ -164,7 +164,7 @@ public class HomeFragment extends Fragment {
 
     // Navigate to Map
     private void navigateToMap() {
-        HomeFragment fragment = new HomeFragment();
+        MapFragment fragment = new MapFragment();
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)

@@ -38,6 +38,10 @@ public class ArticlesFragment extends Fragment implements ArticlesAdapter.OnArti
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         externalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        //to fix the population issue this clears the view everytime fragment loads
+        internalArticles.clear();
+        externalArticles.clear();
+
         loadArticlesFromAssets("internal_articles.json", true);
         loadArticlesFromAssets("external_articles.json", false);
 

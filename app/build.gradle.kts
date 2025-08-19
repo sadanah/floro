@@ -69,6 +69,9 @@ dependencies {
 
     implementation(libs.firebase.database)
     implementation(libs.firebase.storage)
+
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
 }
 
 apply(plugin = "com.google.gms.google-services")

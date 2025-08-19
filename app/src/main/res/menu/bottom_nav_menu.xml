@@ -16,9 +16,9 @@
         android:title="" />
 
     <item
-        android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_profile"
-        android:title="Profile" />
+        android:id="@+id/nav_articles"
+        android:icon="@drawable/ic_articles"
+        android:title="Articles" />
 
     <item
         android:id="@+id/nav_forum"

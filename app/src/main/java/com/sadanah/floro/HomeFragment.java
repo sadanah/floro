@@ -172,6 +172,16 @@ public class HomeFragment extends Fragment {
                 .commit();
     }
 
+    // Navigate to Admin
+    private void navigateToAdmin() {
+        AdminDashFragment fragment = new AdminDashFragment();
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     // Setup the grid cards and assign click listeners
     private void setupGridCards(View view) {
         int[] cardIds = new int[]{
@@ -180,7 +190,8 @@ public class HomeFragment extends Fragment {
                 R.id.card_forums,
                 R.id.card_info,
                 R.id.card_map,
-                R.id.card_articles
+                R.id.card_articles,
+                R.id.card_admin_login
         };
 
         for (int id : cardIds) {
@@ -205,6 +216,8 @@ public class HomeFragment extends Fragment {
             navigateToMap();
         } else if (cardId == R.id.card_articles) {
             navigateToArticles();
+        } else if (cardId == R.id.card_admin_login) {
+        navigateToAdmin();
         }
     }
 

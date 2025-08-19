@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnProfile.setOnClickListener(v -> {
-            Fragment f = new AdminDashFragment();  // create the fragment
+            Fragment f = new ProfileFragment();  // create the fragment
             loadFragment(f);                     // load it in the container
         });
 
